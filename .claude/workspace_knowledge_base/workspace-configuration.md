@@ -31,6 +31,7 @@ The organisation's industry is in `analyze/datasets/organisation-context.yml` (i
 - extractor `tap-meltano-cloud` (meltanolabs) — `git+https://github.com/MeltanoLabs/tap-meltano-cloud.git@v0.1.9`
 - extractor `tap-surveymonkey-privateapp` (meltanolabs) — `git+https://github.com/MeltanoLabs/tap-surveymonkey.git@v0.1.0`
 - extractor `tap-urban-airship` (singer-io) — `tap-urban-airship`
+- extractor `tap-zendesk` (meltanolabs) — `git+https://github.com/MeltanoLabs/tap-zendesk@v0.1.0`
 - file `analyze-dbt-models` (matatika) — `git+https://github.com/Matatika/analyze-dbt-models@v0.4.0`
 - file `files-dbt` (matatika) — `git+https://github.com/Matatika/files-dbt@v1.6.2`
 - file `files-melty-ai` (matatika) — `git+https://github.com/meltano/files-melty-ai.git@v0.1.1`
