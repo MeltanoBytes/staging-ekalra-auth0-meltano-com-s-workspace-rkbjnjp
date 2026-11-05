@@ -60,6 +60,14 @@ The organisation's industry is in `analyze/datasets/organisation-context.yml` (i
 - **Timeout:** 3600s
 - **Max retries:** 0
 
+### Meltano Cloud DVT (`meltano-cloud-dvt`)
+
+- **Type:** WORKFLOW
+- **Schedule:** none
+- **Data components:** `tap-meltano-cloud` (tap-meltano-cloud, meltanolabs) → `dbt` (dbt, dbt-labs)
+- **Timeout:** 3600s
+- **Max retries:** 0
+
 ### meltano-cloud.a3f2f675-4297-471e-919c-814f496972b4.backfill (`meltano-cloud.a3f2f675-4297-471e-919c-814f496972b4.backfill`)
 
 - **Type:** INGESTION

@@ -1,0 +1,8 @@
+version: pipelines/v0.1
+type: WORKFLOW
+label: Meltano Cloud DVT
+timeout: 3600
+max_retries: 0
+data_components:
+- tap-meltano-cloud
+- dbt
