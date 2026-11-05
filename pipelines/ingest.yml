@@ -1,11 +1,8 @@
 version: pipelines/v0.1
 type: INGESTION
 label: Ingest
-schedule: '@hourly'
 timeout: 3600
 max_retries: 0
 data_components:
 - tap-meltano-cloud--ingest
 - Warehouse
-triggered_by:
-- meltano-cloud
