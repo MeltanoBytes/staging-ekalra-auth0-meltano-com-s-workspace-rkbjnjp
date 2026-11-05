@@ -18,6 +18,10 @@ recorded here.
 - **Default data store:** Warehouse
 - **State data store:** Warehouse
 
+## Organisation
+
+The organisation's industry is in `analyze/datasets/organisation-context.yml` (its `raw_data`). The organisation's knowledge is every dataset tagged `#organisation-context` - that one, the datasets of an industry context bundle, and any the workspace adds - so read them before creating dbt models or querying the warehouse: `grep -rl '#organisation-context' analyze/datasets`.
+
 ## Data stores
 
 - `Warehouse` (target-postgres, matatika)

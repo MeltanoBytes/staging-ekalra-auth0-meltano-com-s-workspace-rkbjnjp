@@ -1,0 +1,10 @@
+version: datasets/v0.3
+title: Organisation context
+description: |
+  - **Industry:** Technology &amp; Software
+
+  #organisation-context
+raw_data: |-
+  {
+    "industry" : "Technology & Software"
+  }
