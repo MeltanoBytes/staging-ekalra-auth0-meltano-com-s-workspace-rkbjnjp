@@ -1,0 +1,69 @@
+{
+  "plugin_type": "extractors",
+  "name": "tap-surveymonkey-privateapp",
+  "namespace": "tap_surveymonkey_privateapp",
+  "variant": "meltanolabs",
+  "label": "SurveyMonkey (Private App)",
+  "docs": "https://www-staging.matatika.com/data-details/tap-surveymonkey/",
+  "repo": "https://github.com/MeltanoLabs/tap-surveymonkey",
+  "pip_url": "git+https://github.com/MeltanoLabs/tap-surveymonkey.git@v0.1.0",
+  "executable": "tap-surveymonkey",
+  "description": "SurveyMonkey is an online survey platform for creating and distributing surveys\nand collecting and analysing responses.\n\nThe tap-surveymonkey extractor connects to the SurveyMonkey API v3 to extract\nyour surveys, their full definitions, distribution collectors, collector\nrecipients, individual responses, and address-book contacts. Alongside the\nraw nested streams it also emits **normalized** streams that flatten the\nsurvey definition and responses into a relational, one-row-per-element shape\n(`survey_pages`, `questions`, `question_headings`, `question_options`,\n`sub_questions`, `response_pages`, `response_answers`) so downstream models do\nnot need warehouse-specific `UNNEST`/`FLATTEN` SQL.\n\n### Prerequisites\n\nYou authenticate with a SurveyMonkey **API access token** that you generate\nfrom a private app in your own SurveyMonkey account. SurveyMonkey does not\nissue a separate API key \u2014 the API authenticates with an OAuth access token.\n\n1. Sign in at [developer.surveymonkey.com](https://developer.surveymonkey.com)\n   with a SurveyMonkey account that can access the surveys you want to extract\n   (an admin account is recommended \u2014 the token can only see surveys that user\n   can see).\n2. Under **My Apps**, add a new **Private** app. A private app is tied to your\n   own account and needs no SurveyMonkey approval.\n3. On the app's **Settings** page, grant the `surveys_read`,\n   `collectors_read`, `responses_read`, `responses_read_detail` and\n   `contacts_read` scopes.\n4. Copy the **Access Token** shown on the same page and paste it into the\n   **Access Token** setting here.\n\nNotes:\n\n- `responses_read_detail` (full per-question answer detail on the\n  `responses`/`response_answers` streams) and API access in general require a\n  paid SurveyMonkey plan; on Basic plans response answer detail is limited or\n  unavailable.\n- **Token lifetime depends on your SurveyMonkey plan.** On **Enterprise** you\n  can deploy the private app so the token does not expire; on lower paid plans\n  the token expires roughly every 90 days, after which you regenerate it in\n  the app and update the **Access Token** setting here.\n- Set **Region** to match your account's data-residency region (US / EU / CA);\n  the wrong region causes authentication or lookup failures.\n\n> This token-based connector is an interim option. Once the Matatika\n> SurveyMonkey OAuth app is approved, a **Connect**-based SurveyMonkey\n> connector will be available that manages tokens for you.\n\n### Data recovery / backfill\n\nThe `responses`, `response_pages` and `response_answers` streams replicate\nincrementally on `date_modified`, bookmarked against `start_date`. To backfill\nor re-sync historical data, lower the `start_date`, or reset the connection\nstate so the sync restarts from `start_date`. All other streams are full-table\nand always re-sync completely.\n\n> **Note on history.** These streams emit the *current state* of each record.\n> They are not slowly-changing-dimension (SCD type-2) history tables \u2014 if you\n> need valid-from/valid-to versioning (e.g. to match a Fivetran history-mode\n> schema), layer that in the warehouse (for example with dbt snapshots).\n\n### Available Streams\n\n#### surveys\n\nAll surveys in the account. Parent stream for the other streams.\n\n| Field | Description |\n|---|---|\n| id | Unique identifier of the survey |\n| title | Survey title |\n| nickname | Survey nickname |\n| category | Survey category |\n| language | Survey language |\n| question_count | Number of questions in the survey |\n| page_count | Number of pages in the survey |\n| response_count | Number of collected responses |\n| folder_id | ID of the folder containing the survey |\n| date_created | Timestamp when the survey was created |\n| date_modified | Timestamp when the survey was last modified |\n| href | API resource URL |\n\n#### survey_details\n\nThe full definition of each survey, including pages and their questions.\nSynced per survey.\n\n| Field | Description |\n|---|---|\n| id | Unique identifier of the survey |\n| title | Survey title |\n| question_count | Number of questions in the survey |\n| page_count | Number of pages in the survey |\n| response_count | Number of collected responses |\n| date_created | Timestamp when the survey was created |\n| date_modified | Timestamp when the survey was last modified |\n| pages | Array of page objects, each containing its `questions` |\n\n#### collectors\n\nCollectors (distribution channels such as web links and email invitations) for\neach survey. Synced per survey.\n\n| Field | Description |\n|---|---|\n| id | Unique identifier of the collector |\n| survey_id | ID of the parent survey |\n| name | Collector name |\n| href | API resource URL |\n\n#### recipients\n\nRecipients of each collector (the people an email-invite collector was sent\nto). Synced per collector; web-link collectors have no recipients.\n\n| Field | Description |\n|---|---|\n| id | Unique identifier of the recipient |\n| collector_id | ID of the parent collector |\n| survey_id | ID of the parent survey |\n| email | Recipient email address |\n| phone_number | Recipient phone number, if provided |\n| survey_response_status | How far the recipient got (not_responded, partially_responded, completely_responded) |\n| mail_status | Invite delivery status (sent, not_sent, processing) |\n| custom_fields | Custom contact fields for the recipient |\n| extra_fields | Extra fields included in the invite message |\n| remove_link | Unsubscribe link |\n| survey_link | Link to the survey in the invite |\n| href | API resource URL |\n\n#### responses\n\nIndividual survey responses, including per-question answers. Synced per survey\nand incrementally replicated by `date_modified`.\n\n| Field | Description |\n|---|---|\n| id | Unique identifier of the response |\n| survey_id | ID of the parent survey |\n| collector_id | ID of the collector the response came through |\n| recipient_id | ID of the recipient, if applicable |\n| total_time | Total time spent on the response, in seconds |\n| ip_address | IP address of the respondent |\n| response_status | Status of the response (completed, partial, etc.) |\n| custom_variables | Custom variables passed to the collector |\n| date_created | Timestamp when the response was created |\n| date_modified | Timestamp when the response was last modified \u2014 replication key |\n| pages | Array of answered pages and their question answers |\n\n#### survey_pages\n\nOne row per survey page, flattened from `survey_details`.\n\n| Field | Description |\n|---|---|\n| id | Unique identifier of the page |\n| survey_id | ID of the parent survey |\n| title | Page title |\n| description | Page description |\n| position | Position of the page within the survey |\n| question_count | Number of questions on the page |\n| href | API resource URL |\n\n#### questions\n\nOne row per question, flattened from `survey_details`.\n\n| Field | Description |\n|---|---|\n| id | Unique identifier of the question |\n| survey_id | ID of the parent survey |\n| page_id | ID of the parent page |\n| position | Position of the question within the page |\n| visible | Whether the question is visible |\n| family | Question family (e.g. single_choice, matrix, open_ended) |\n| subtype | Question subtype |\n| forced_ranking | Whether forced ranking is enabled |\n| href | API resource URL |\n\n#### question_headings\n\nOne row per question heading (questions can carry multiple headings for A/B\nrandom assignment). Flattened from `survey_details`.\n\n| Field | Description |\n|---|---|\n| question_id | ID of the parent question |\n| survey_id | ID of the parent survey |\n| page_id | ID of the parent page |\n| heading_index | Ordinal position of the heading within the question |\n| heading | Heading text |\n| description | Heading description |\n\n#### question_options\n\nOne row per answer choice, flattened from `survey_details`.\n\n| Field | Description |\n|---|---|\n| id | Unique identifier of the answer choice |\n| question_id | ID of the parent question |\n| survey_id | ID of the parent survey |\n| page_id | ID of the parent page |\n| position | Position of the choice within the question |\n| visible | Whether the choice is visible |\n| text | Answer choice text |\n| weight | Choice weight, if scored |\n\n#### sub_questions\n\nOne row per matrix subquestion (row), flattened from `survey_details`.\n\n| Field | Description |\n|---|---|\n| id | Unique identifier of the subquestion (row) |\n| question_id | ID of the parent question |\n| survey_id | ID of the parent survey |\n| page_id | ID of the parent page |\n| position | Position of the row within the question |\n| visible | Whether the row is visible |\n| text | Subquestion (row) text |\n\n#### response_pages\n\nOne row per answered page of a response, flattened from `responses`.\nIncrementally replicated by `date_modified`.\n\n| Field | Description |\n|---|---|\n| id | ID of the page |\n| response_id | ID of the parent response |\n| survey_id | ID of the parent survey |\n| date_modified | Parent response modification timestamp \u2014 replication key |\n\n#### response_answers\n\nOne row per individual answer, flattened from `responses` down to the answer\nlevel. Incrementally replicated by `date_modified`.\n\n| Field | Description |\n|---|---|\n| id | Deterministic surrogate key for the answer |\n| response_id | ID of the parent response |\n| survey_id | ID of the parent survey |\n| page_id | ID of the parent page |\n| question_id | ID of the parent question |\n| choice_id | ID of the selected answer choice, if applicable |\n| row_id | ID of the matrix row, if applicable |\n| col_id | ID of the matrix column, if applicable |\n| other_id | ID of the \"other\" answer option, if applicable |\n| text | Free-text answer value, if applicable |\n| date_modified | Parent response modification timestamp \u2014 replication key |\n\n#### contacts\n\nAddress-book contacts. Requires the `contacts_read` scope.\n\n| Field | Description |\n|---|---|\n| id | Unique identifier of the contact |\n| first_name | Contact first name |\n| last_name | Contact last name |\n| email | Contact email address |\n| phone_number | Contact phone number |\n| status | Contact status |\n| href | API resource URL |\n\n#### survey_categories\n\nSurvey categories available to the account.\n\n| Field | Description |\n|---|---|\n| id | Unique identifier of the category |\n| name | Category display name |\n",
+  "logo_url": "/assets/logos/extractors/surveymonkey.png",
+  "capabilities": [
+    "about",
+    "catalog",
+    "discover",
+    "state",
+    "stream-maps"
+  ],
+  "settings": [
+    {
+      "name": "access_token",
+      "kind": "string",
+      "label": "Access Token",
+      "description": "A SurveyMonkey API access token, used directly as a bearer token.\nGenerate one from a private app in your own SurveyMonkey account (see\nPrerequisites). The token must have the `surveys_read`, `collectors_read`,\n`responses_read`, `responses_read_detail` and `contacts_read` scopes.\n",
+      "hidden": false,
+      "sensitive": true,
+      "required": "true",
+      "configured": false,
+      "protected": false
+    },
+    {
+      "name": "start_date",
+      "kind": "date_iso8601",
+      "label": "Start Date",
+      "description": "The earliest response date to sync, in ISO-8601 format (e.g. 2026-01-01T00:00:00Z). Used as the incremental bookmark for the responses stream.",
+      "hidden": false,
+      "sensitive": false,
+      "required": "true",
+      "configured": false,
+      "protected": false
+    },
+    {
+      "name": "api_url",
+      "kind": "options",
+      "value": "https://api.surveymonkey.com/v3",
+      "label": "Region",
+      "description": "The SurveyMonkey data-residency region your account belongs to, set when\nthe account was created. Selecting the wrong region will cause\nauthentication or lookup failures. If unsure, check with your SurveyMonkey\naccount administrator.\n",
+      "options": [
+        {
+          "label": "United States",
+          "value": "https://api.surveymonkey.com/v3"
+        },
+        {
+          "label": "Europe (EU)",
+          "value": "https://api.eu.surveymonkey.com/v3"
+        },
+        {
+          "label": "Canada (CA)",
+          "value": "https://api.surveymonkey.ca/v3"
+        }
+      ],
+      "hidden": false,
+      "sensitive": false,
+      "configured": false,
+      "protected": false
+    }
+  ]
+}

@@ -12,6 +12,9 @@ plugins:
   - name: tap-urban-airship
     variant: singer-io
     pip_url: tap-urban-airship
+  - name: tap-surveymonkey-privateapp
+    variant: meltanolabs
+    pip_url: git+https://github.com/MeltanoLabs/tap-surveymonkey.git@v0.1.0
   loaders:
   - name: target-postgres
     variant: matatika
