@@ -46,7 +46,7 @@ The organisation's industry is in `analyze/datasets/organisation-context.yml` (i
 ### Ingest (`ingest`)
 
 - **Type:** INGESTION
-- **Schedule:** `@daily`
+- **Schedule:** `@hourly`
 - **Data components:** `tap-meltano-cloud--ingest` (tap-meltano-cloud, meltanolabs) → `Warehouse` (target-postgres, matatika)
 - **Tables loaded:** `public.channels`, `public.datacomponents`, `public.datasets`, `public.datastores`, `public.jobs`, `public.pipeline_jobs`, `public.pipeline_metrics`, `public.pipelines`, `public.workspaces`
 - **Timeout:** 3600s
@@ -75,6 +75,14 @@ The organisation's industry is in `analyze/datasets/organisation-context.yml` (i
 - **Schedule:** none
 - **Data components:** `dbt` (dbt, dbt-labs) → `dbt-artifacts` (dbt-artifacts, matatika) → `matatika` (matatika, matatika)
 - **Actions:** `dbt:deps`, `dbt:docs-generate`, `dbt-artifacts:convert-matatika`, `matatika:publish`
+- **Timeout:** 3600s
+- **Max retries:** 0
+
+### SurveyMonkey (Private App) (`surveymonkey-(private-app)`)
+
+- **Type:** INGESTION
+- **Schedule:** `@daily`
+- **Data components:** `tap-surveymonkey-privateapp--surveymonkey--private-app` (tap-surveymonkey-privateapp, meltanolabs) → `Warehouse` (target-postgres, matatika)
 - **Timeout:** 3600s
 - **Max retries:** 0
 

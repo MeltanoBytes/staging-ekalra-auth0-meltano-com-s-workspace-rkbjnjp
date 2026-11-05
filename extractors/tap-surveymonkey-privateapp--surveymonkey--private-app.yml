@@ -1,0 +1,7 @@
+plugins:
+  extractors:
+  - name: tap-surveymonkey-privateapp--surveymonkey--private-app
+    inherit_from: tap-surveymonkey-privateapp
+    annotations:
+      meltano-cloud:
+        ingestion: surveymonkey-(private-app)
