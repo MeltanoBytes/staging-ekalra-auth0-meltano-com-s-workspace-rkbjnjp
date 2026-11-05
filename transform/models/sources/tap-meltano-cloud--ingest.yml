@@ -4,7 +4,7 @@
 version: 2
 sources:
 - name: tap_meltano_cloud__ingest
-  schema: analytics
+  schema: public
   meta:
     meltano-cloud:
       ingestion: ingest
