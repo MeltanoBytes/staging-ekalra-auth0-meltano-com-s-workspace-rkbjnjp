@@ -9,6 +9,9 @@ plugins:
   - name: tap-meltano-cloud
     variant: meltanolabs
     pip_url: git+https://github.com/MeltanoLabs/tap-meltano-cloud.git@v0.1.9
+  - name: tap-urban-airship
+    variant: singer-io
+    pip_url: tap-urban-airship
   loaders:
   - name: target-postgres
     variant: matatika

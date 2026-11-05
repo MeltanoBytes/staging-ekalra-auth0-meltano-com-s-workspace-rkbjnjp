@@ -1,0 +1,59 @@
+{
+  "plugin_type": "extractors",
+  "name": "tap-urban-airship",
+  "namespace": "tap_urban_airship",
+  "variant": "singer-io",
+  "label": "Airship",
+  "docs": "https://www-staging.matatika.com/data-details/tap-urban-airship/",
+  "repo": "https://github.com/singer-io/tap-urban-airship",
+  "pip_url": "tap-urban-airship",
+  "description": "Airship is a customer engagement platform.\n\nAirship is a platform that helps businesses engage with their customers through personalized messaging across various channels such as mobile apps, SMS, email, and web notifications. It provides tools for creating and sending targeted messages, automating campaigns, and analyzing user behavior to optimize engagement. Airship also offers features such as in-app messaging, push notifications, and mobile wallet passes to enhance the customer experience. Its goal is to help businesses build long-lasting relationships with their customers by delivering relevant and timely messages.",
+  "logo_url": "/assets/logos/extractors/urban-airship.png",
+  "capabilities": [
+    "catalog",
+    "discover",
+    "state"
+  ],
+  "settings": [
+    {
+      "name": "app_secret",
+      "kind": "string",
+      "label": "App Secret",
+      "description": "A secret key used to authenticate the app with the Airship API.",
+      "hidden": false,
+      "sensitive": true,
+      "configured": false,
+      "protected": false
+    },
+    {
+      "name": "app_key",
+      "kind": "string",
+      "label": "App Key",
+      "description": "A unique identifier for the app used to connect to the Airship API.",
+      "hidden": false,
+      "sensitive": true,
+      "configured": false,
+      "protected": false
+    },
+    {
+      "name": "start_date",
+      "kind": "date_iso8601",
+      "label": "Start Date",
+      "description": "The date from which to retrieve data from the Airship API.",
+      "hidden": false,
+      "sensitive": false,
+      "configured": false,
+      "protected": false
+    },
+    {
+      "name": "user_agent",
+      "kind": "string",
+      "label": "User Agent",
+      "description": "A string identifying the client making the API request.",
+      "hidden": false,
+      "sensitive": false,
+      "configured": false,
+      "protected": false
+    }
+  ]
+}
