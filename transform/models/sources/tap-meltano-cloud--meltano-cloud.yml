@@ -9,7 +9,6 @@ sources:
     meltano-cloud:
       ingestion: meltano-cloud
   tables:
-  - name: channels
   - name: datacomponents
   - name: datasets
   - name: datastores
