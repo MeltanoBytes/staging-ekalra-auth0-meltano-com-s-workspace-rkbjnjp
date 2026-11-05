@@ -77,3 +77,11 @@ The organisation's industry is in `analyze/datasets/organisation-context.yml` (i
 - **Timeout:** 3600s
 - **Max retries:** 0
 
+### WW (`ww`)
+
+- **Type:** WORKFLOW
+- **Schedule:** none
+- **Data components:** `dbt` (dbt, dbt-labs)
+- **Timeout:** 3600s
+- **Max retries:** 0
+
