@@ -28,6 +28,7 @@ The organisation's industry is in `analyze/datasets/organisation-context.yml` (i
 
 ## Plugins
 
+- extractor `tap-meltano-cloud` (meltanolabs) — `git+https://github.com/MeltanoLabs/tap-meltano-cloud.git@v0.1.9`
 - file `analyze-dbt-models` (matatika) — `git+https://github.com/Matatika/analyze-dbt-models@v0.4.0`
 - file `files-dbt` (matatika) — `git+https://github.com/Matatika/files-dbt@v1.6.2`
 - file `files-melty-ai` (matatika) — `git+https://github.com/meltano/files-melty-ai.git@v0.1.1`
@@ -37,6 +38,14 @@ The organisation's industry is in `analyze/datasets/organisation-context.yml` (i
 - utility `matatika` (matatika) — `matatika~=1.17.1`
 
 ## Pipelines
+
+### Meltano Cloud (`meltano-cloud`)
+
+- **Type:** INGESTION
+- **Schedule:** none
+- **Data components:** `tap-meltano-cloud--meltano-cloud` (tap-meltano-cloud, meltanolabs) → `Warehouse` (target-postgres, matatika)
+- **Timeout:** 3600s
+- **Max retries:** 0
 
 ### Model Lineage (`model-lineage`)
 
