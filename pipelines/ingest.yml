@@ -7,3 +7,5 @@ max_retries: 0
 data_components:
 - tap-meltano-cloud--ingest
 - Warehouse
+triggered_by:
+- meltano-cloud

@@ -47,6 +47,7 @@ The organisation's industry is in `analyze/datasets/organisation-context.yml` (i
 
 - **Type:** INGESTION
 - **Schedule:** `@hourly`
+- **Triggered by:** `meltano-cloud`
 - **Data components:** `tap-meltano-cloud--ingest` (tap-meltano-cloud, meltanolabs) → `Warehouse` (target-postgres, matatika)
 - **Tables loaded:** `public.channels`, `public.datacomponents`, `public.datasets`, `public.datastores`, `public.jobs`, `public.pipeline_jobs`, `public.pipeline_metrics`, `public.pipelines`, `public.workspaces`
 - **Timeout:** 3600s
