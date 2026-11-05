@@ -36,6 +36,7 @@ The organisation's industry is in `analyze/datasets/organisation-context.yml` (i
 - file `files-dbt` (matatika) — `git+https://github.com/Matatika/files-dbt@v1.6.2`
 - file `files-melty-ai` (matatika) — `git+https://github.com/meltano/files-melty-ai.git@v0.1.1`
 - loader `target-postgres` (matatika) — `git+https://github.com/Matatika/pipelinewise-target-postgres.git@v0.2.2`
+- loader `target-snowflake` (meltanolabs) — `'meltanolabs-target-snowflake[snowpipe] @ git+https://github.com/MeltanoLabs/target-snowflake.git@v0.20.4'`
 - transformer `dbt` (dbt-labs) — `dbt-core~=1.7.0 dbt-postgres~=1.7.0 dbt-snowflake~=1.7.0 dbt-bigquery~=1.7.0 dbt-sqlserver~=1.7.0 dbt-clickhouse~=1.7.0 dbt-duckdb~=1.7.0 dbt-databricks~=1.7.0 duckdb==1.5.5`
 - utility `dbt-artifacts` (matatika) — `git+https://github.com/Matatika/dbt-artifacts-ext.git@v0.1.0`
 - utility `matatika` (matatika) — `matatika~=1.17.1`
